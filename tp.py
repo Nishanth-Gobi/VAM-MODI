@@ -13,28 +13,26 @@ class transportationProblem:
 
 	def getLowest(self, arr):
 
-		min_ele = arr[0]
-		for i in arr:
-			if i<min_ele:
-				min_ele = i
+		temp_min = 0
+		for i in range(len(arr)):
+			if arr[i] < arr[temp_min]:
+				temp_min = i
 
-		return min_ele
+		return arr[temp_min]
 
 	def getSecondLowest(self, arr, l):
 
-		min_ele = 0
+		min_ele = arr.index(l)
+
+		temp_min = 0  
+		if min_ele == 0:
+			temp_min = 1
+
 		for i in range(len(arr)):
-			if arr[i]!=l:
-				min_ele = arr[i]
-			else:
-				min_ele = arr[i+1]
-			break
+			if arr[i] < arr[temp_min] and i!=min_ele:
+				temp_min = i
 
-		for i in arr:
-				if i<min_ele and i!=l:
-						min_ele = i
-
-		return min_ele
+		return arr[temp_min]
 
 	def transpose(self, arr):
 			
@@ -54,7 +52,9 @@ class transportationProblem:
 		supply = [i for i in self.supply]
 		demand = [i for i in self.demand]
 
-		for i in range(6):
+		sd_left = len(supply) + len(demand)
+
+		while sd_left>1:
 
 			row_diff = []
 			col_diff = []
@@ -90,7 +90,6 @@ class transportationProblem:
 				# ic(row)
 				row_min = min(row)
 				row_min_index = row.index(row_min)
-
 				# ic(row_min, row_min_index)
 
 				if supply[row_index] > demand[row_min_index]:
@@ -102,15 +101,18 @@ class transportationProblem:
 
 					for i in cost_matrix:
 						i[row_min_index] = sys.maxsize
+					
+					sd_left -= 1
 
 				elif supply[row_index] < demand[row_min_index]:
-				# ic()
+					# ic()
 					self.ans.append([ supply[row_index] , row_min ])
 
 					demand[row_min_index] -= supply[row_index]
 					supply[row_index] = 0
 
 					cost_matrix[row_index] = [sys.maxsize for i in range(len(cost_matrix[0]))]
+					sd_left -= 1
 
 				else:
 					# ic()
@@ -123,6 +125,7 @@ class transportationProblem:
 						i[row_min_index] = sys.maxsize
 
 					cost_matrix[row_index] = [sys.maxsize for i in range(len(cost_matrix[0]))]
+					sd_left -= 2
 
 				# ic(cost_matrix)
 
@@ -143,6 +146,8 @@ class transportationProblem:
 					for i in cost_matrix:
 						i[col_index] = sys.maxsize
 
+					sd_left -= 1
+
 				elif supply[col_min_index] < demand[col_index]:
 
 					self.ans.append([ supply[col_min_index] , col_min ])
@@ -151,6 +156,7 @@ class transportationProblem:
 					supply[col_min_index] = 0
 
 					cost_matrix[col_min_index] = [sys.maxsize for i in range(len(cost_matrix[0]))]
+					sd_left -= 1
 
 				else:
 
@@ -163,8 +169,10 @@ class transportationProblem:
 						i[col_index] = sys.maxsize
 
 					cost_matrix[col_min_index] = [sys.maxsize for i in range(len(cost_matrix[0]))]
+					sd_left -= 1
 
 			# ic(self.ans)
+		print(self.ans)
 
 	def getTotalCost(self):
 
