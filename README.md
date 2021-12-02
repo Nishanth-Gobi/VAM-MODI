@@ -15,4 +15,4 @@ This project is an implemetation of the research paper
 
 ## Future work
 
-The path finding function (under MODI) needs to be improved to find complex closed-paths (as needed by test case 4).
+The path finding function (under MODI) needs to be improved to find closed-paths that have more than four vertices (as needed by test case 4).
